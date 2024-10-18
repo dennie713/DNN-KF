@@ -106,7 +106,7 @@ class KalmanFilter:
         #     prediction_errors = cp.random.multivariate_normal(mean=[0, 0], cov=self.P_k_data[i].reshape(2,2), size=num_samples)
         #     prediction_errors_data.append(prediction_errors)
         # prediction_errors_data = cp.array(prediction_errors_data).reshape(10000, 2)
-        return prediction_errors_data
+        return prediction_errors
 
 def KF_Process(k):
     A_data = []
@@ -146,54 +146,51 @@ def KF_Process(k):
         # prediction_errors_data = KF.getMonteCarlo()
     return x_k_update_data, x_k_predict_data, P_k_update_data, P_k_predict_data, k_y_data, KCP_data, z_data, x_true_data, x_true_data_noise, P_k_data
 
+if __name__ == "__main__":
+    # 產生數據並儲存.txt
+    training_size = 15001
+    data_set_size = training_size
+    x_k_update_data, x_k_predict_data, P_k_update_data, P_k_predict_data, k_y_data, KCP_data, z_data, x_true_data, x_true_data_noise, P_k_data = KF_Process(training_size)
+    # for k in range(1, training_size):
+    # 狀態估測與狀態估測誤差協方差要分開訓練
+    # --------狀態估測模型-------- #
+    x_tel = x_true_data - cp.array(x_k_update_data)
+    k_y_data = [cp.array(item).reshape(-1) for item in k_y_data]
+    # prediction_errors_data = cp.array(prediction_errors_data).reshape(training_size, 2)
+    x_k_update_data = cp.array(x_k_update_data)
+    k_y_data = cp.array(k_y_data)
+    x_tel = cp.array(x_tel)
+    x_true_data = cp.array(x_true_data)
+    x_true_data_noise = cp.array(x_true_data_noise)
+    z_data = cp.array(z_data)
+    x_k_predict_data = cp.array(x_k_predict_data)
+    # print("x_k_update_data.shape =", x_k_update_data[0:training_size - 1, :].shape)
+    # print("k_y_data =", k_y_data[0:training_size - 1, :].shape)
+    x_data_all = cp.concatenate((x_k_update_data[0:training_size - 1, :], k_y_data[0:training_size - 1, :], x_tel[0:training_size - 1, :], x_true_data[0:training_size - 1, :], x_true_data_noise[0:training_size - 1, :], z_data[0:training_size - 1, :], x_k_predict_data[0:training_size - 1, :]), axis=1)# me
 
-# 產生數據並儲存.txt
-training_size = 15001
-data_set_size = training_size
-x_k_update_data, x_k_predict_data, P_k_update_data, P_k_predict_data, k_y_data, KCP_data, z_data, x_true_data, x_true_data_noise, P_k_data = KF_Process(training_size)
-# print("x_k_predict_data.shape =", cp.array(x_k_predict_data).shape)
-# print("k_y_data =", k_y_data)
-# print("z_data =", z_data)
-# for k in range(1, training_size):
-# 狀態估測與狀態估測誤差協方差要分開訓練
-# --------狀態估測模型-------- #
-x_tel = x_true_data - cp.array(x_k_update_data)
-k_y_data = [cp.array(item).reshape(-1) for item in k_y_data]
-# prediction_errors_data = cp.array(prediction_errors_data).reshape(training_size, 2)
-x_k_update_data = cp.array(x_k_update_data)
-k_y_data = cp.array(k_y_data)
-x_tel = cp.array(x_tel)
-x_true_data = cp.array(x_true_data)
-x_true_data_noise = cp.array(x_true_data_noise)
-z_data = cp.array(z_data)
-x_k_predict_data = cp.array(x_k_predict_data)
-# print("x_k_update_data.shape =", x_k_update_data[0:training_size - 1, :].shape)
-# print("k_y_data =", k_y_data[0:training_size - 1, :].shape)
-x_data_all = cp.concatenate((x_k_update_data[0:training_size - 1, :], k_y_data[0:training_size - 1, :], x_tel[0:training_size - 1, :], x_true_data[0:training_size - 1, :], x_true_data_noise[0:training_size - 1, :], z_data[0:training_size - 1, :], x_k_predict_data[0:training_size - 1, :]), axis=1)# me
+    # --------狀態估測誤差協方差模型-------- #
+    P_k_update_data = cp.array(P_k_update_data)
+    KCP_data = cp.array(KCP_data)
+    P_data_all = cp.concatenate((P_k_update_data, KCP_data), axis=1)# me
+        
+    # 假设你的 x_input_data_all 是 cupy 数组
+    # 先将 cupy 数组转换为 numpy 数组
+    x_data_all_np = x_data_all.get()
+    P_data_all_np = P_data_all.get()
+    # 使用 numpy.savetxt 将其保存到 txt 文件中
+    np.savetxt('x_data_all.txt', x_data_all_np, delimiter=' ')
+    np.savetxt('P_data_all.txt', P_data_all_np, delimiter=' ')
 
-# --------狀態估測誤差協方差模型-------- #
-P_k_update_data = cp.array(P_k_update_data)
-KCP_data = cp.array(KCP_data)
-P_data_all = cp.concatenate((P_k_update_data, KCP_data), axis=1)# me
-    
-# 假设你的 x_input_data_all 是 cupy 数组
-# 先将 cupy 数组转换为 numpy 数组
-x_data_all_np = x_data_all.get()
-P_data_all_np = P_data_all.get()
-# 使用 numpy.savetxt 将其保存到 txt 文件中
-np.savetxt('x_data_all.txt', x_data_all_np, delimiter=' ')
-np.savetxt('P_data_all.txt', P_data_all_np, delimiter=' ')
-
-plt.figure()
-plt.plot(x_true_data[:, 0].get(), label='True_x1', color='black', linewidth=3)
-plt.plot(x_true_data[:, 1].get(), label='True_x2', color='blue', linewidth=3)
-plt.plot(x_true_data_noise[:, 0].get(), label='True_x1_add_noise', color='purple', linewidth=3)
-plt.plot(x_true_data_noise[:, 1].get(), label='True_x2_add_noise', color='red', linewidth=3)
-plt.plot(cp.array(x_k_update_data)[:, 0].get(), label='LKF_x1', color='orange', linewidth=2)
-plt.plot(cp.array(x_k_update_data)[:, 1].get(), label='LKF_x2', color='cyan', linewidth=2)
-# plt.plot(z_data[:,0], label='z', color='red', linewidth=1)
-plt.xlabel('data')
-plt.ylabel('value')
-plt.legend()
-plt.title('estimate vs true :x1 x2')
-plt.show()
+    plt.figure()
+    plt.plot(x_true_data[:, 0].get(), label='True_x1', color='black', linewidth=3)
+    plt.plot(x_true_data[:, 1].get(), label='True_x2', color='blue', linewidth=3)
+    plt.plot(x_true_data_noise[:, 0].get(), label='True_x1_add_noise', color='purple', linewidth=3)
+    plt.plot(x_true_data_noise[:, 1].get(), label='True_x2_add_noise', color='red', linewidth=3)
+    plt.plot(cp.array(x_k_update_data)[:, 0].get(), label='LKF_x1', color='orange', linewidth=2)
+    plt.plot(cp.array(x_k_update_data)[:, 1].get(), label='LKF_x2', color='cyan', linewidth=2)
+    # plt.plot(z_data[:,0], label='z', color='red', linewidth=1)
+    plt.xlabel('data')
+    plt.ylabel('value')
+    plt.legend()
+    plt.title('estimate vs true :x1 x2')
+    plt.show()  

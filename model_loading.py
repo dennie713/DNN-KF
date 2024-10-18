@@ -38,7 +38,7 @@ output_size = 2    # 假設輸出有兩個維度
 
 # 加載模型
 x_lstm_model_loaded = LSTM.LSTM_KF(input_size, hidden_size, output_size)  # 創建模型實例
-x_lstm_model_loaded.load_state_dict(torch.load('x_lstm_kf_model_t1.pth', weights_only=True))  # 加載權重
+x_lstm_model_loaded.load_state_dict(torch.load('model/x_lstm_kf_model_0.001.pth', weights_only=True))  # 加載權重
 x_lstm_model_loaded.eval()  # 將模型設置為評估模式
 x_lstm_model_loaded = x_lstm_model_loaded.to(device)
 
@@ -72,7 +72,7 @@ output_size = 4   # 假設輸出有兩個維度
 
 # 加載模型
 P_lstm_model_loaded = LSTM.LSTM_KF(input_size, hidden_size, output_size)  # 創建模型實例
-P_lstm_model_loaded.load_state_dict(torch.load('P_lstm_kf_model_t1.pth', weights_only=True))  # 加載權重
+P_lstm_model_loaded.load_state_dict(torch.load('model/P_lstm_kf_model_0.001.pth', weights_only=True))  # 加載權重
 P_lstm_model_loaded.eval()  # 將模型設置為評估模式
 P_lstm_model_loaded = P_lstm_model_loaded.to(device)
 
@@ -98,8 +98,8 @@ print("P =",cp.reshape(cp.array(P_lstm_output_data)[-1, :4], (2, 2)))
 x_lstm_output_data_np = x_lstm_output_data.get()
 P_lstm_output_data_np = P_lstm_output_data.get()
 # 使用 numpy.savetxt 将其保存到 txt 文件中
-np.savetxt('x_lstm_output_data.txt', x_lstm_output_data_np, delimiter=' ')
-np.savetxt('P_lstm_output_data.txt', P_lstm_output_data_np, delimiter=' ')
+np.savetxt('result/x_lstm_output_data.txt', x_lstm_output_data_np, delimiter=' ')
+np.savetxt('result/P_lstm_output_data.txt', P_lstm_output_data_np, delimiter=' ')
 
 # 估測狀態匯出
 plt.figure()

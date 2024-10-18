@@ -2,7 +2,7 @@ import numpy as np
 import ImportData, Cal
 
 a = 0
-def KF(dt, pos):
+def KF(dt, pos, PosCmd):
     A = np.array([[1, dt, 0.5*dt**2],
                   [0, 1, dt],
                   [0, 0, 1 ]])
@@ -28,6 +28,11 @@ def KF(dt, pos):
     xm = np.zeros((3, 1))  
     Pm = P
     km_y_data = []
+    x_tel_data = []
+    Pp_data = []
+    Pm_data = []
+    kcp_data = []
+
     for i in range(len(pos)): # m = measurement;p = predict
         Pp = np.dot(np.dot(A, Pm), A.T) + Q
         xp = np.dot(A, xm) + Wt
@@ -36,12 +41,20 @@ def KF(dt, pos):
         y = (pos[i] - np.dot(C, xp))
         km_y = np.dot(Km, y)
         xm = xp + km_y
+        kcp = np.dot(np.dot(Km, C), Pp)
         Pm = np.dot((np.eye(3) - np.dot(Km, C)), Pp)
         pose[i] = xm[0, 0]
         vele[i] = xm[1, 0]
         acce[i] = xm[2, 0]
-        km_y_data.append(km_y)
-    return pose, vele, acce
+        # x_tel
+        x_tel = PosCmd[i] - pose[i]
+        x_tel_data.append(x_tel.flatten())
+        km_y_data.append(km_y.flatten())
+        Pp_data.append(Pp.flatten())
+        # print("Pm =", Pm)
+        Pm_data.append(Pm.flatten())
+        kcp_data.append(kcp.flatten())
+    return pose, vele, acce, km_y_data, x_tel_data, Pp_data, Pm_data, kcp_data
 
 if __name__ == "__main__":
     # Constant
@@ -59,7 +72,9 @@ if __name__ == "__main__":
     Motordata, Mousedata = ImportData.ImportData(path1, path2)
     Pos, PosCmd, Vel, VelCmd, AccCmd, TorCtrl = Cal.Cal(Motordata, SamplingTime) 
     t = np.arange(0, (len(Motordata[:,0])) * SamplingTime, SamplingTime)
-    pose, vele, acce = KF(SamplingTime, Pos)
+
+    # 原始資料沒加雜訊
+    pose, vele, acce, km_y_data, x_tel_data, Pp_data, Pm_data, kcp_data = KF(SamplingTime, Pos, PosCmd)
     Motor_true_data = []
     PosCmd = np.expand_dims(PosCmd, axis=1)  # 將一維數組擴展為 n x 1
     VelCmd = np.expand_dims(VelCmd, axis=1)
@@ -67,10 +82,30 @@ if __name__ == "__main__":
     pose = np.expand_dims(pose, axis=1)
     vele = np.expand_dims(vele, axis=1)
     acce = np.expand_dims(acce, axis=1)
-    Motor_true_data = np.concatenate((PosCmd, VelCmd, AccCmd, pose, vele, acce), axis=1)
+    # km_y_data = np.expand_dims(km_y_data, axis=1)
+    km_y_add_noise_data = km_y_data
+    # x_tel_data = np.expand_dims(x_tel_data, axis=1)
+    Motor_x_data = np.concatenate((PosCmd, vele, acce, pose, km_y_data, x_tel_data), axis=1)
+    Motor_P_data = np.concatenate((Pm_data, kcp_data), axis=1)
+    
+    # 命令有加雜訊
+    # PosCmd_add_noise = PosCmd + np.random.normal(0, 0.05, np.array(PosCmd).shape)
+    # pose, vele, acce, km_y_data, x_tel_data, Pp_data, Pm_data, kcp_data = KF(SamplingTime, PosCmd_add_noise, PosCmd)
+    # PosCmd_add_noise = np.expand_dims(PosCmd, axis=1)  # 將一維數組擴展為 n x 1
+    # VelCmd = np.expand_dims(VelCmd, axis=1)
+    # AccCmd = np.expand_dims(AccCmd, axis=1)
+    # pose_add_noise = np.expand_dims(pose, axis=1)
+    # vele_add_noise = np.expand_dims(vele, axis=1)
+    # acce_add_noise = np.expand_dims(acce, axis=1)
+    # # km_y_add_noise_data = np.expand_dims(km_y_data, axis=1)
+    # km_y_add_noise_data = km_y_data
+    # x_tel_add_noise_data = np.expand_dims(x_tel_data, axis=1)
+    # print("len() =", len(PosCmd_add_noise))
+    # Motor_true_data = np.concatenate((PosCmd_add_noise, pose_add_noise, vele_add_noise, acce_add_noise, km_y_add_noise_data, x_tel_add_noise_data), axis=1)
     
     # x_data_all_np = x_data_all.get()
     # P_data_all_np = P_data_all.get()
     # 使用 numpy.savetxt 将其保存到 txt 文件中
-    np.savetxt('Motor_true_data.txt', Motor_true_data, delimiter=' ')
+    np.savetxt('motor_dataset/Motor_x_data.txt', Motor_x_data, delimiter=' ')
+    np.savetxt('motor_dataset/Motor_P_data.txt', Motor_P_data, delimiter=' ')
 

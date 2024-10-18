@@ -11,8 +11,8 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # 訓練參數設置
 epoch = 300
-traning_size = 10000
-batch_size = 2500
+traning_size = 1948
+batch_size = 1948
 hidden_size = 128
 data_set_size = traning_size
 
@@ -43,12 +43,22 @@ P_lstm_model = P_lstm_model.to(device)
 P_optimizer = torch.optim.Adam(P_lstm_model.parameters(), lr=0.001)
 P_loss_fn = nn.MSELoss()
 
-x_data, x_k_update_data, k_y_data, x_tel, x_true, x_true_noise, x_obsve, x_input_data_all, x_k_predict_data, P_data, P_k_update_data, KCP_data, P_input_data_all = load_test.load_data('x_data_all_15000.txt', 'P_data_all_15000.txt')
+# 輸入模擬資料
+# x_data, x_k_update_data, k_y_data, x_tel, x_true, x_true_noise, x_obsve, x_input_data_all, x_k_predict_data, P_data, P_k_update_data, KCP_data, P_input_data_all = load_test.load_data('sim_dataset/x_data_all_15000.txt', 'sim_dataset/P_data_all_15000.txt')
 # x_input_data_all = np.loadtxt('x_input_data_all_normalized.txt', delimiter=' ')
 # P_input_data_all = np.loadtxt('P_input_data_all_normalized.txt', delimiter=' ')
+# 馬達實際資料
+x_data = np.loadtxt('motor_dataset/Motor_x_data.txt')
+P_data = np.loadtxt('motor_dataset/Motor_P_data.txt')
+x_input_data_all = x_data[:, 3:]
+x_true = (x_data)[:,3]
+P_input_data_all = P_data
 
-P_true = cp.array([[1e-7, 1e-7],
-                   [1e-7, 1e-7]])
+P_true = cp.array([[1e-7, 1e-7, 1e-7],
+                   [1e-7, 1e-7, 1e-7],
+                   [1e-7, 1e-7, 1e-7]])
+# P_true = cp.array([[1e-7, 1e-7],
+#                    [1e-7, 1e-7]])
 x_y_true_all = []
 x_y_pred_all = []
 x_loss_data = []
@@ -76,8 +86,10 @@ for epoch in range(epoch + 1):
         x_lstm_output = x_lstm_model(x_input_tensor)
 
         # 計算損失
-        x_target = torch.tensor(cp.array(x_input_data_all)[1:,:2], dtype=torch.float32).to(device)
-        x_loss = x_loss_fn(x_lstm_output[1:batch_size, :2], x_target[i+1:i+batch_size,:2]) #可以得到一個epoch中每筆資料的mse
+        # x_target = torch.tensor(cp.array(x_input_data_all)[1:,:2], dtype=torch.float32).to(device)
+        # x_loss = x_loss_fn(x_lstm_output[1:batch_size, :2], x_target[i+1:i+batch_size,:2]) #可以得到一個epoch中每筆資料的mse
+        x_target = torch.tensor(cp.array(x_input_data_all)[:,0], dtype=torch.float32).to(device)
+        x_loss = x_loss_fn(x_lstm_output[1:batch_size, 3], x_target[i+1:i+batch_size,3]) #可以得到一個epoch中每筆資料的mse
         x_loss_data.append(x_loss.item()) 
         x_rmse_loss = torch.sqrt(x_loss) #可以得到一個epoch中每筆資料的rmse
         x_rmse_loss_data.append(x_rmse_loss.item())
@@ -110,8 +122,10 @@ for epoch in range(epoch + 1):
         P_lstm_output = P_lstm_model(P_input_tensor)
 
         # 計算損失
-        P_target = torch.tensor(cp.array(P_input_data_all)[:, :4], dtype=torch.float32).to(device)
-        P_loss = P_loss_fn(P_lstm_output[:, :4], P_target[i:i+batch_size, :4]) #可以得到一個epoch中每筆資料的mse
+        # P_target = torch.tensor(cp.array(P_input_data_all)[:, :4], dtype=torch.float32).to(device)
+        # P_loss = P_loss_fn(P_lstm_output[:, :4], P_target[i:i+batch_size, :4]) #可以得到一個epoch中每筆資料的mse
+        P_target = torch.tensor(cp.array(P_input_data_all)[:, :9], dtype=torch.float32).to(device)
+        P_loss = P_loss_fn(P_lstm_output[:, :9], P_target[i:i+batch_size, :9]) #可以得到一個epoch中每筆資料的mse
         P_loss_data.append(P_loss.item()) 
         P_rmse_loss = torch.sqrt(P_loss) #可以得到一個epoch中每筆資料的rmse
         P_rmse_loss_data.append(P_rmse_loss.item())
