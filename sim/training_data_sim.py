@@ -5,11 +5,19 @@ import matplotlib.pyplot as plt
 import cupy as cp
 # import numpy as cp
 # import motor.ImportData as ImportData, motor.Cal as Cal
+<<<<<<< HEAD
+=======
+import AddNoise
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 # import matplotlib.pyplot as plt
 
 class KalmanFilter:
     # def __init__(self, B, H, Q, R, P, u, x):
     def __init__(self):
+<<<<<<< HEAD
+=======
+        # self.A = A  # 狀態轉移矩陣
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
         B = cp.array([[0],
                   [0]])
         H = cp.array([[1.8, 2]]) # 1/cpi 
@@ -26,7 +34,10 @@ class KalmanFilter:
         # 控制輸入
         u = cp.zeros((1, 1))
         
+<<<<<<< HEAD
         # self.A = A  # 狀態轉移矩陣
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
         self.B = B  # 控制矩陣
         self.H = H  # 觀測矩陣
         self.Q = Q  # 過程噪聲
@@ -148,7 +159,11 @@ class KalmanFilter:
         self.x_true_data = cp.vstack([self.x_true_data, self.x_true.flatten()])
         # self.x_true_data.append(self.x_true.flatten())
         # 實際值加入雜訊
+<<<<<<< HEAD
         self.x_true_data_noise = self.x_true_data + cp.random.normal(0, 0.001, cp.array(self.x_true_data).shape)
+=======
+        self.x_true_data_noise = self.x_true_data + cp.random.normal(0, 0.05, cp.array(self.x_true_data).shape)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
         # print(self.x_true_data_noise[1].reshape(2, 1).shape)
         return self.x_true_data, self.x_true_data_noise
     
@@ -234,6 +249,7 @@ if __name__ == "__main__":
     x_data_all_np = x_data_all.get()
     P_data_all_np = P_data_all.get()
     # 使用 numpy.savetxt 将其保存到 txt 文件中
+<<<<<<< HEAD
     np.savetxt('sim_dataset/x_data_all.txt', x_data_all_np, delimiter=' ')
     np.savetxt('sim_dataset/P_data_all.txt', P_data_all_np, delimiter=' ')
 
@@ -244,6 +260,18 @@ if __name__ == "__main__":
     plt.plot(x_true_data_noise[3:, 1].get(), label='True_x2_add_noise', color='red', linewidth=1)
     plt.plot(cp.array(x_k_update_data)[3:, 0].get(), label='LKF_x1', color='orange', linewidth=1)
     plt.plot(cp.array(x_k_update_data)[3:, 1].get(), label='LKF_x2', color='cyan', linewidth=1)
+=======
+    np.savetxt('x_data_all.txt', x_data_all_np, delimiter=' ')
+    np.savetxt('P_data_all.txt', P_data_all_np, delimiter=' ')
+
+    plt.figure()
+    plt.plot(x_true_data[:, 0].get(), label='True_x1', color='black', linewidth=3)
+    plt.plot(x_true_data[:, 1].get(), label='True_x2', color='blue', linewidth=3)
+    plt.plot(x_true_data_noise[:, 0].get(), label='True_x1_add_noise', color='purple', linewidth=3)
+    plt.plot(x_true_data_noise[:, 1].get(), label='True_x2_add_noise', color='red', linewidth=3)
+    plt.plot(cp.array(x_k_update_data)[:, 0].get(), label='LKF_x1', color='orange', linewidth=2)
+    plt.plot(cp.array(x_k_update_data)[:, 1].get(), label='LKF_x2', color='cyan', linewidth=2)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
     # plt.plot(z_data[:,0], label='z', color='red', linewidth=1)
     plt.xlabel('data')
     plt.ylabel('value')

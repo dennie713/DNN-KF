@@ -43,8 +43,13 @@ x = cp.array([[0.2],
 
 # 準備輸入數據
 # 模擬資料
+<<<<<<< HEAD
 path1 = './sim_dataset/x_data_all_15000_0.001.txt'
 path2 = './sim_dataset/P_data_all_15000_0.001.txt'
+=======
+path1 = './sim_dataset/x_data_all_15000_0.05.txt'
+path2 = './sim_dataset/P_data_all_15000_0.05.txt'
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 x_data, x_k_update_data, k_y_data, x_tel, x_true, x_true_noise, x_obsve, x_input_data_all, x_k_predict_data, P_data, P_k_update_data, KCP_data, P_input_data_all = dataset_arrange.loadSimData(path1, path2)
 # x_input_data_all = np.loadtxt('x_input_data_all_normalized.txt', delimiter=' ')
 # P_input_data_all = np.loadtxt('P_input_data_all_normalized.txt', delimiter=' ')
@@ -56,7 +61,11 @@ output_size = 2    # 假設輸出有兩個維度
 
 # 加載模型
 x_lstm_model_loaded = LSTM.LSTM_KF(input_size, hidden_size, output_size)  # 創建模型實例
+<<<<<<< HEAD
 x_lstm_model_loaded.load_state_dict(torch.load('sim/model/x_model_0.001_layer1_2.pth', weights_only=True))  # 加載權重
+=======
+x_lstm_model_loaded.load_state_dict(torch.load('sim/model/x_lstm_kf_model_layer1_2.pth', weights_only=True))  # 加載權重
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 x_lstm_model_loaded.eval()  # 將模型設置為評估模式
 x_lstm_model_loaded = x_lstm_model_loaded.to(device)
 # --------P_model loading --------#
@@ -66,12 +75,21 @@ output_size = 4   # 假設輸出有兩個維度
 
 # 加載模型
 P_lstm_model_loaded = LSTM.LSTM_KF(input_size, hidden_size, output_size)  # 創建模型實例
+<<<<<<< HEAD
 P_lstm_model_loaded.load_state_dict(torch.load('sim/model/P_model_0.001_layer1_2.pth', weights_only=True))  # 加載權重
+=======
+P_lstm_model_loaded.load_state_dict(torch.load('sim/model/P_lstm_kf_model_layer1_2.pth', weights_only=True))  # 加載權重
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 P_lstm_model_loaded.eval()  # 將模型設置為評估模式
 P_lstm_model_loaded = P_lstm_model_loaded.to(device)
 
 # DNNKF
 start_time1 = time.time()
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 # --------x_model loading --------#
 x_lstm_output_data = []
 for k in range(start_size, start_size + validation_size):
@@ -100,10 +118,16 @@ for k in range(start_size, start_size + validation_size):
 end_time3 = time.time()
 
 # KF
+<<<<<<< HEAD
 
 KF = KalmanFilter()
 x_k_update_data_KF_data = []
 start_time2 = time.time()
+=======
+start_time2 = time.time()
+KF = KalmanFilter()
+x_k_update_data_KF_data = []
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 for k in range(start_size, start_size + validation_size):
     # print(k+1)
     # print("12312313")
@@ -117,6 +141,7 @@ for k in range(start_size, start_size + validation_size):
     # print(k+1)
 end_time2 = time.time()
 
+<<<<<<< HEAD
 # 模擬資料less_feature
 path1 = './sim_dataset/x_data_all_15000_0.001.txt'
 path2 = './sim_dataset/P_data_all_15000_0.001.txt'
@@ -230,10 +255,13 @@ for k in range(start_size, start_size + validation_size):
     P_lstm_output_data_1feature.append(P_lstm_output.detach().cpu().numpy().flatten())
 end_time7 = time.time()
 
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 # 計算時長
 DNNKF_time = end_time1 - start_time1
 LKF_time = end_time2 - start_time2
 DNNKF_total_time = end_time3 - start_time1
+<<<<<<< HEAD
 DNNKF_time_1feature = end_time4 - start_time3
 DNNKF_total_time_1feature = end_time5 - start_time3
 KF_LSTM_time = end_time6 - start_time4
@@ -249,6 +277,13 @@ print("LKF_time平均一筆所花時間:", LKF_time/validation_size)
 print("DNNKF估計x和P平均一筆所花時間:", DNNKF_total_time/validation_size)
 print("DNNKF 少2組特徵 估計x和P平均一筆所花時間:", DNNKF_total_time_1feature/validation_size)
 print("DNNKF 少2組特徵 模擬kf x和P平均一筆所花時間:", KF_LSTM_total_time/validation_size)
+=======
+print("DNNKF僅估計x所花時間:", DNNKF_time)
+print("DNNKF僅估計x平均一筆所花時間:", DNNKF_time/validation_size)
+print("LKF_time所花時間:", LKF_time)
+print("LKF_time平均一筆所花時間:", LKF_time/validation_size)
+print("DNNKF估計x和P平均一筆所花時間:", DNNKF_total_time/validation_size)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 
 # 先将 cupy 数组转换为 numpy 数组
 # x_lstm_output_data_np = x_lstm_output_data.get()
@@ -268,8 +303,11 @@ plt.plot(cp.array(x_k_update_data)[start_size:start_size + validation_size, 0].g
 plt.plot(cp.array(x_k_update_data)[start_size:start_size + validation_size, 1].get(), label='LKF_x2', color='cyan', linewidth=2)
 plt.plot(cp.array(x_lstm_output_data)[:, 0].get(), label='DKF_x1', color='purple', linewidth=1)
 plt.plot(cp.array(x_lstm_output_data)[:, 1].get(), label='DKF_x2', color='red', linewidth=1)
+<<<<<<< HEAD
 plt.plot(cp.array(x_lstm_output_data_1feature)[:, 0].get(), label='DKF_x1_1feature', color='yellow', linewidth=1)
 plt.plot(cp.array(x_lstm_output_data_1feature)[:, 1].get(), label='DKF_x2_1feature', color='green', linewidth=1)
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 plt.xlabel('data')
 plt.ylabel('value')
 plt.legend()
@@ -287,10 +325,13 @@ c = cp.abs(cp.array(x_lstm_output_data)[:, 0] - cp.array(x_true)[start_size:star
 plt.plot(c.get(), label='DKF_x1', color='purple', linewidth=1)
 d = cp.abs(cp.array(x_lstm_output_data)[:, 1] - cp.array(x_true)[start_size:start_size + validation_size, 1])
 plt.plot(d.get(), label='DKF_x2', color='red', linewidth=1)
+<<<<<<< HEAD
 e = cp.abs(cp.array(x_lstm_output_data_1feature)[:, 0] - cp.array(x_true)[start_size:start_size + validation_size, 0])
 plt.plot(e.get(), label='DKF_x1_1feature', color='yellow', linewidth=1)
 f = cp.abs(cp.array(x_lstm_output_data_1feature)[:, 1] - cp.array(x_true)[start_size:start_size + validation_size, 1])
 plt.plot(f.get(), label='DKF_x2_1feature', color='green', linewidth=1)
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 plt.xlabel('data')
 plt.ylabel('estimate value')
 plt.legend()

@@ -7,7 +7,10 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import matplotlib.pyplot as plt
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+<<<<<<< HEAD
 import time
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 import LSTM, dataset_arrange
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -32,6 +35,7 @@ output_size = 2    # 假設輸出有兩個維度
 
 # 加載模型
 x_lstm_model_loaded = LSTM.LSTM_KF(input_size, hidden_size, output_size)  # 創建模型實例
+<<<<<<< HEAD
 x_lstm_model_loaded.load_state_dict(torch.load('sim/model/x_model_0.001_layer1_2.pth', weights_only=True))  # 加載權重
 x_lstm_model_loaded.eval()  # 將模型設置為評估模式
 x_lstm_model_loaded = x_lstm_model_loaded.to(device)
@@ -40,6 +44,16 @@ x_lstm_model_loaded = x_lstm_model_loaded.to(device)
 x_lstm_output_data = []
 for k in range(start_size, start_size + validation_size):
     # print("k =", k)
+=======
+x_lstm_model_loaded.load_state_dict(torch.load('sim/model/x_lstm_kf_model_0.001_layer1.pth', weights_only=True))  # 加載權重
+x_lstm_model_loaded.eval()  # 將模型設置為評估模式
+x_lstm_model_loaded = x_lstm_model_loaded.to(device)
+
+x_lstm_output_data = []
+
+for k in range(start_size, start_size + validation_size):
+    print("k =", k)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
     # x_tel = cp.array(x_true) - cp.array(x_k_update_data)
     x_input_data = x_input_data_all[k]
     x_input_data = torch.tensor(cp.hstack(x_input_data), dtype=torch.float32).unsqueeze(0).unsqueeze(0).to(device)
@@ -49,7 +63,11 @@ for k in range(start_size, start_size + validation_size):
     with torch.no_grad():  # 禁用梯度計算以提高推斷效率
         x_lstm_output = x_lstm_model_loaded(x_input_tensor)  # 獲取模型的輸出
     x_lstm_output_data.append(x_lstm_output.detach().cpu().numpy().flatten())
+<<<<<<< HEAD
     print("x LSTM Output:", x_lstm_output[:, :3].cpu().numpy())  # 輸出結果
+=======
+    print("x LSTM Output:", x_lstm_output[:, :3])  # 輸出結果
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 
 # --------P_model loading --------#
 # 設置模型參數
@@ -58,7 +76,11 @@ output_size = 4   # 假設輸出有兩個維度
 
 # 加載模型
 P_lstm_model_loaded = LSTM.LSTM_KF(input_size, hidden_size, output_size)  # 創建模型實例
+<<<<<<< HEAD
 P_lstm_model_loaded.load_state_dict(torch.load('sim/model/P_model_0.001_layer1_2.pth', weights_only=True))  # 加載權重
+=======
+P_lstm_model_loaded.load_state_dict(torch.load('sim/model/P_lstm_kf_model_0.001_layer1.pth', weights_only=True))  # 加載權重
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 P_lstm_model_loaded.eval()  # 將模型設置為評估模式
 P_lstm_model_loaded = P_lstm_model_loaded.to(device)
 
@@ -72,9 +94,13 @@ for k in range(start_size, start_size + validation_size):
     with torch.no_grad():  # 禁用梯度計算以提高推斷效率
         P_lstm_output = P_lstm_model_loaded(P_input_tensor)  # 獲取模型的輸出
     P_lstm_output_data.append(P_lstm_output.detach().cpu().numpy().flatten())
+<<<<<<< HEAD
 print("P =",cp.reshape(cp.array(P_lstm_output_data)[-1, :4], (2, 2)))
 # end_time = time.time()
 # 
+=======
+
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 # 先将 cupy 数组转换为 numpy 数组
 # x_lstm_output_data_np = x_lstm_output_data.get()
 # P_lstm_output_data_np = P_lstm_output_data.get()
@@ -84,8 +110,11 @@ P_lstm_output_data_np = P_lstm_output_data
 np.savetxt('./result/x_lstm_output_data_sim.txt', x_lstm_output_data_np, delimiter=' ')
 np.savetxt('./result/P_lstm_output_data_sim.txt', P_lstm_output_data_np, delimiter=' ')
 
+<<<<<<< HEAD
 # print("FDKF執行時間 :", end_time - start_time)
 # print("FDKF平均一筆執行時間 :", np.mean(end_time - start_time))
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 # 估測狀態匯出
 plt.figure()
 # x_true_noise = x_true
@@ -108,6 +137,7 @@ plt.title('estimate vs true :x1 x2')
 # 估測狀態誤差匯出
 plt.figure()
 # x_k_update_data = cp.array(x_k_update_data).reshape(-1, 1)
+<<<<<<< HEAD
 # print("x_k_update_data =", x_k_update_data)
 # print("x_true =", x_true)
 a = cp.abs(cp.array(x_k_update_data)[start_size:start_size + validation_size, 0] - cp.array(x_true)[start_size:start_size + validation_size, 0])
@@ -118,6 +148,18 @@ plt.plot(b.get(), label='LKF_x2', color='cyan', linewidth=1)
 # plt.plot(e.get(), label='LKF_x2', color='purple', linewidth=2)
 c = cp.abs(cp.array(x_lstm_output_data)[:, 0] - cp.array(x_true)[start_size:start_size + validation_size, 0])
 plt.plot(c.get(), label='DKF_x1', color='purple', linewidth=1)
+=======
+print("x_k_update_data =", x_k_update_data)
+print("x_true =", x_true)
+a = cp.abs(cp.array(x_k_update_data)[start_size:start_size + validation_size, 0] - cp.array(x_true)[start_size:start_size + validation_size, 0])
+plt.plot(a.get(), label='LKF_x1', color='black', linewidth=2)
+b = cp.abs(cp.array(x_k_update_data)[start_size:start_size + validation_size, 1] - cp.array(x_true)[start_size:start_size + validation_size, 1])
+plt.plot(b.get(), label='LKF_x2', color='green', linewidth=2)
+# e = cp.abs(cp.array(x_k_update_data)[start_size:start_size + validation_size, 2] - cp.array(x_true)[start_size:start_size + validation_size, 2])
+# plt.plot(e.get(), label='LKF_x2', color='purple', linewidth=2)
+c = cp.abs(cp.array(x_lstm_output_data)[:, 0] - cp.array(x_true)[start_size:start_size + validation_size, 0])
+plt.plot(c.get(), label='DKF_x1', color='blue', linewidth=1)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 d = cp.abs(cp.array(x_lstm_output_data)[:, 1] - cp.array(x_true)[start_size:start_size + validation_size, 1])
 plt.plot(d.get(), label='DKF_x2', color='red', linewidth=1)
 # f = cp.abs(cp.array(x_lstm_output_data)[:, 2] - cp.array(x_true)[start_size:start_size + validation_size, 2])
@@ -127,6 +169,7 @@ plt.ylabel('estimate value')
 plt.legend()
 plt.title('estimate pos vel acc')
 
+<<<<<<< HEAD
 print("---------------------------------------")
 print("LKF_x1 mean error :", np.mean(a))
 print("LKF_x2 mean error :", np.mean(b))
@@ -134,4 +177,6 @@ print("DKF_x1 mean error :", np.mean(c))
 print("DKF_x2 mean error :", np.mean(d))
 print("---------------------------------------")
 
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
 plt.show()
