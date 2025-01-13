@@ -30,6 +30,10 @@ def loadMotorData(path_x, path_P):
     # 馬達實際資料
     x_data = np.loadtxt(path_x) # motor_dataset/Motor_x_data.txt
     P_data = np.loadtxt(path_P) # motor_dataset/Motor_P_data.txt
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     # Pos, Vel, Acc_LAE, pose, vele, acce, PosCmd, VelCmd, AccCmd, km_y_data
     x_true = x_data[:,:1]
     # print("x_true.shape =", x_true.shape)
@@ -52,20 +56,52 @@ def loadMotorData(path_x, path_P):
     km_y_data = x_data[:, 9:]
     x_tel = x_cmd - x_k_update_data
    
+<<<<<<< HEAD
     # x_input_data_all = np.concatenate((x_true, x_k_update_data, km_y_data, x_tel), axis = 1)
     # x_input_data_all = np.concatenate((x_k_update_data, km_y_data, x_tel), axis = 1)
     # x_input_data_all = np.concatenate((x_true, x_true, x_true, x_cmd), axis = 1)
+=======
+    # x_input_data_all = np.concatenate((x_k_update_data, km_y_data, x_tel), axis = 1)
+    x_input_data_all = np.concatenate((x_true, x_true, x_true, x_cmd), axis = 1)
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     # x_input_data_all = np.concatenate((x_k_update_data, x_true, x_cmd), axis = 1)
     # x_input_data_all = np.concatenate((x_true, x_true, x_true, x_true, x_cmd), axis = 1)
 
     # x_input_data_all = np.concatenate((x_true, x_true, x_true, km_y_data, x_tel), axis = 1)
+<<<<<<< HEAD
     x_input_data_all = np.concatenate((x_true, x_k_update_data, x_cmd), axis = 1)
     # x_input_data_all = np.concatenate((x_true, x_true, x_true), axis = 1)
     # x_input_data_all = x_k_update_data
+=======
+    # x_input_data_all = np.concatenate((x_true, x_true, x_true), axis = 1)
+    # x_input_data_all = x_k_update_data
+=======
+    # Pos, pose, vele, acce, PosCmd, VelCmd, AccCmd, km_y_data
+    x_true = x_data[:,0]
+    x_k_update_data = x_data[:, 1:4]
+    x_cmd = x_data[:, 4:7]
+    km_y_data = x_data[:, 7:8]
+    x_tel = x_cmd - x_k_update_data
+    # km_y_data = np.array(km_y_data).reshape(-1, 1)
+    # x_tel = np.array(x_tel)
+    # print("x_k_update_data.shape =", x_k_update_data.shape)
+    # print("km_y_data.shape =", km_y_data.shape)
+    # print("x_tel.shape =", x_tel.shape)
+    x_input_data_all = np.concatenate((x_k_update_data, km_y_data, x_tel), axis = 1)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     # Pm_data, kcp_data
     P_k_update_data = P_data[:, :9]
     KCP_data = P_data[:, 9:]
     P_input_data_all = np.concatenate((P_k_update_data, KCP_data), axis=1)
+<<<<<<< HEAD
     # print("x_ture =", x_true)
     
+=======
+<<<<<<< HEAD
+    # print("x_ture =", x_true)
+    
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     return x_data, x_true, x_k_update_data, x_cmd, km_y_data, x_tel, x_input_data_all, P_data, P_k_update_data, KCP_data, P_input_data_all

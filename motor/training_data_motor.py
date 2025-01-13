@@ -1,5 +1,13 @@
 import numpy as np
+<<<<<<< HEAD
 import ImportData, Cal, LAE
+=======
+<<<<<<< HEAD
+import ImportData, Cal, LAE
+=======
+import ImportData, Cal 
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
 
 a = 0
 def KF(dt, pos, PosCmd):
@@ -65,6 +73,10 @@ if __name__ == "__main__":
     
     ## 量測半徑
     r = 11.6287
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     CPI = 1600
     ## 讀取檔案
     path1 = ['./motor_dataset/IPS400_G30_F_motion.txt'] #馬達資料.txt路徑
@@ -73,28 +85,65 @@ if __name__ == "__main__":
     Motordata, Mousedata = ImportData.ImportData(path1, path2)
     MouseTime, MotorTime, mouseX, mouseY, Pos, PosCmd, Vel, VelCmd, AccCmd, TorCtrl, mousedata_data, mouse_displacement, mouse_real_Pos = Cal.Cal(Mousedata, Motordata, SamplingTime, CPI) 
     # Pos, PosCmd, Vel, VelCmd, AccCmd, TorCtrl = Cal.Cal(Motordata, SamplingTime) 
+<<<<<<< HEAD
+=======
+=======
+    ## 讀取檔案
+    path1 = ['./motor_dataset/IPS300_G30_F_motion.txt'] #馬達資料.txt路徑
+    path2 = ['./motor_dataset/IPS300_G30_F_mouse.txt']  #滑鼠資料.txt路徑
+    
+    Motordata, Mousedata = ImportData.ImportData(path1, path2)
+    Pos, PosCmd, Vel, VelCmd, AccCmd, TorCtrl = Cal.Cal(Motordata, SamplingTime) 
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     t = np.arange(0, (len(Motordata[:,0])) * SamplingTime, SamplingTime)
 
     # 原始資料沒加雜訊
     pose, vele, acce, km_y_data, Pp_data, Pm_data, kcp_data = KF(SamplingTime, Pos, PosCmd)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     Acc_LAE = LAE.LAE(Pos, 0.001)
 
     Motor_true_data = []
     Pos = np.expand_dims(Pos, axis=1)
     Vel = np.expand_dims(Vel, axis=1)
     Acc_LAE = np.expand_dims(Acc_LAE, axis=1)
+<<<<<<< HEAD
+=======
+=======
+    Motor_true_data = []
+    Pos = np.expand_dims(Pos, axis=1)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     PosCmd = np.expand_dims(PosCmd, axis=1)  # 將一維數組擴展為 n x 1
     VelCmd = np.expand_dims(VelCmd, axis=1)
     AccCmd = np.expand_dims(AccCmd, axis=1)
     pose = np.expand_dims(pose, axis=1)
     vele = np.expand_dims(vele, axis=1)
     acce = np.expand_dims(acce, axis=1)
+<<<<<<< HEAD
     
+=======
+<<<<<<< HEAD
+    
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     # km_y_data = np.expand_dims(km_y_data, axis=1)
     km_y_add_noise_data = km_y_data
     # x_tel_data = np.expand_dims(x_tel_data, axis=1)
     # print("km_y_data.shape =",np.array(km_y_data).shape)
+<<<<<<< HEAD
     Motor_x_data = np.concatenate((Pos, Vel, Acc_LAE, pose, vele, acce, PosCmd, VelCmd, AccCmd, km_y_data), axis=1)
+=======
+<<<<<<< HEAD
+    Motor_x_data = np.concatenate((Pos, Vel, Acc_LAE, pose, vele, acce, PosCmd, VelCmd, AccCmd, km_y_data), axis=1)
+=======
+    Motor_x_data = np.concatenate((Pos, pose, vele, acce, PosCmd, VelCmd, AccCmd, km_y_data), axis=1)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
     Motor_P_data = np.concatenate((Pm_data, kcp_data), axis=1)
     
     # 命令有加雜訊
@@ -117,5 +166,12 @@ if __name__ == "__main__":
     # 使用 numpy.savetxt 将其保存到 txt 文件中
     np.savetxt('motor_dataset/Motor_x_data.txt', Motor_x_data, delimiter=' ')
     np.savetxt('motor_dataset/Motor_P_data.txt', Motor_P_data, delimiter=' ')
+<<<<<<< HEAD
     print("Data save successfully")
+=======
+<<<<<<< HEAD
+    print("Data save successfully")
+=======
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
 

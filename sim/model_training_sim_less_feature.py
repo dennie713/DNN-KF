@@ -23,7 +23,15 @@ data_set_size = traning_size
 # x_k_update_data, x_k_predict_data, P_k_update_data, P_k_predict_data, k_y_data, KCP_data, z_data, x_true_data, x_true_data_noise, P_k_data, prediction_errors_data = KF_training_data.KF_Process(traning_size)    
 
 # x初始化LSTM模型
+<<<<<<< HEAD
 input_size = 2 # 包含狀態預測和卡爾曼增益等輸入特徵
+=======
+<<<<<<< HEAD
+input_size = 2 # 包含狀態預測和卡爾曼增益等輸入特徵
+=======
+input_size = 4 # 包含狀態預測和卡爾曼增益等輸入特徵
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
 output_size = 2  # 輸出狀態估計
 x_lstm_model = LSTM.LSTM_KF(input_size, hidden_size, output_size)
 # 將模型移動到 GPU（如果可用）
@@ -45,7 +53,15 @@ P_loss_fn = nn.MSELoss()
 # 輸入模擬資料
 path1 = 'sim_dataset/x_data_all_15000_0.001.txt'
 path2 = 'sim_dataset/P_data_all_15000_0.001.txt'
+<<<<<<< HEAD
 x_data, x_k_update_data, k_y_data, x_tel, x_true, x_true_noise, x_obsve, x_input_data_all, x_k_predict_data, P_data, P_k_update_data, KCP_data, P_input_data_all = dataset_arrange.loadSimData_less_feature(path1, path2)
+=======
+<<<<<<< HEAD
+x_data, x_k_update_data, k_y_data, x_tel, x_true, x_true_noise, x_obsve, x_input_data_all, x_k_predict_data, P_data, P_k_update_data, KCP_data, P_input_data_all = dataset_arrange.loadSimData_less_feature(path1, path2)
+=======
+x_data, x_k_update_data, k_y_data, x_tel, x_true, x_true_noise, x_obsve, x_input_data_all, x_k_predict_data, P_data, P_k_update_data, KCP_data, P_input_data_all = dataset_arrange.loadSimData(path1, path2)
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
 # x_input_data_all = np.loadtxt('x_input_data_all_normalized.txt', delimiter=' ')
 # P_input_data_all = np.loadtxt('P_input_data_all_normalized.txt', delimiter=' ')
 
@@ -166,10 +182,23 @@ P_y_true_all = cp.array(P_y_true_all)
 P_y_pred_all = cp.array(P_y_pred_all)
 
 # x result儲存模型
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
 torch.save(x_lstm_model.state_dict(), 'sim/model/x_model_0.001_layer1.pth')
 print("-------- x Model saved successfully --------")
 # P result儲存模型
 torch.save(P_lstm_model.state_dict(), 'sim/model/P_model_0.001_layer1.pth')
+<<<<<<< HEAD
+=======
+=======
+torch.save(x_lstm_model.state_dict(), 'sim/model/x_lstm_kf_model.pth')
+print("-------- x Model saved successfully --------")
+# P result儲存模型
+torch.save(P_lstm_model.state_dict(), 'sim/model/P_lstm_kf_model.pth')
+>>>>>>> 306d347394907d950140afa14d4e6ba645070c37
+>>>>>>> 6a91b5d423c756b82df34fa1d19ee44af9e1ac77
 print("-------- P Model saved successfully --------")
 
 # --------狀態估測誤差模型-------- #
